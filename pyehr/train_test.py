@@ -25,7 +25,7 @@ def get_checkpoint_filename(ckpt_dir: str):
 # =================== discard ========================= #
 # def run_dl_experiment(config):
     # # data
-    # dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
+    # dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
     # # logger
     # checkpoint_filename = f'{config["model"]}-fold{config["fold"]}-seed{config["seed"]}'
     # if "time_aware" in config and config["time_aware"] == True:
@@ -63,7 +63,7 @@ def get_checkpoint_filename(ckpt_dir: str):
 
 def train_dl(config):
     # data
-    dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
+    dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
     # logger
     checkpoint_filename = f'{config["model"]}-fold{config["fold"]}-seed{config["seed"]}'
     logger = CSVLogger(save_dir="logs", name=f'train/{config["dataset"]}/{config["task"]}', version=checkpoint_filename)
@@ -87,7 +87,7 @@ def train_dl(config):
 
 def test_dl(config):
     # data
-    dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/fold_{config["fold"]}', batch_size=config["batch_size"], test_mode=config["mode"])
+    dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/processed/fold_{config["fold"]}', batch_size=config["batch_size"], test_mode=config["mode"])
     
     # test
     trainer = L.Trainer(accelerator="gpu", devices=[1], max_epochs=config["epochs"], logger=None, num_sanity_val_steps=0)

@@ -14,6 +14,7 @@ corpus_names = {
     "MOC": ["msd", "pubmed"], # Mixture of Corpus
     "PubMed": ["pubmed"],
     "MSD": ["msd"],
+    "MIMIC": ["mimic"],
     "Textbooks": ["textbooks"],
 }
 

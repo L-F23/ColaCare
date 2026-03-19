@@ -1,7 +1,7 @@
 mimic_config = {
     "retriever_name": "MedCPT",
-    "corpus_name": "MSD",  # "PubMed", "MOC"
-    "llm_name": "deepseek-chat",
+    "corpus_name": "MIMIC",  # "PubMed", "MOC"
+    "llm_name": "hunyuan-chat",
     # "llm_name": "qwen-turbo",
     # "llm_name": "gpt-4o-mini",
     # "llm_name": "gpt-4o",
@@ -27,8 +27,8 @@ mimic_config = {
 
 mimic_re_config = {
     "retriever_name": "MedCPT",
-    "corpus_name": "MSD",  # "PubMed", "MOC"
-    "llm_name": "deepseek-chat",
+    "corpus_name": "MIMIC",  # "PubMed", "MOC"
+    "llm_name": "hunyuan-chat",
     "epochs": 50,
     "patience": 10,
     "ehr_dataset_name": "mimic-iv",
@@ -48,8 +48,8 @@ mimic_re_config = {
 
 mimic_config_v2 = {
     "retriever_name": "MedCPT",
-    "corpus_name": "MSD",  # "PubMed", "MOC"
-    "llm_name": "deepseek-chat",
+    "corpus_name": "MIMIC",  # "PubMed", "MOC"
+    "llm_name": "hunyuan-chat",
     "epochs": 50,
     "patience": 10,
     "ehr_dataset_name": "mimic-iv",
@@ -69,8 +69,8 @@ mimic_config_v2 = {
 
 mimic_re_config_v2 = {
     "retriever_name": "MedCPT",
-    "corpus_name": "MSD",  # "PubMed", "MOC"
-    "llm_name": "deepseek-chat",
+    "corpus_name": "MIMIC",  # "PubMed", "MOC"
+    "llm_name": "hunyuan-chat",
     "epochs": 50,
     "patience": 10,
     "ehr_dataset_name": "mimic-iv",
@@ -90,8 +90,8 @@ mimic_re_config_v2 = {
 
 # cdsl_config = {
 #     "retriever_name": "MedCPT",
-#     "corpus_name": "MSD",  # "PubMed", "MOC"
-#     "llm_name": "deepseek-chat",  # gpt-4o-mini
+#     "corpus_name": "MIMIC",  # "PubMed", "MOC"
+#     "llm_name": "hunyuan-chat",  # gpt-4o-mini
 #     "epochs": 50,
 #     "patience": 10,
 #     "ehr_dataset_name": "cdsl",
@@ -111,8 +111,8 @@ mimic_re_config_v2 = {
 
 # cdsl_config_v2 = {
 #     "retriever_name": "MedCPT",
-#     "corpus_name": "MSD",  # "PubMed", "MOC"
-#     "llm_name": "deepseek-chat",  # gpt-4o-mini
+#     "corpus_name": "MIMIC",  # "PubMed", "MOC"
+#     "llm_name": "hunyuan-chat",  # gpt-4o-mini
 #     "epochs": 50,
 #     "patience": 10,
 #     "ehr_dataset_name": "cdsl",
@@ -132,8 +132,8 @@ mimic_re_config_v2 = {
 
 # esrd_config = {
 #     "retriever_name": "MedCPT",
-#     "corpus_name": "MSD",  # "PubMed", "MOC"
-#     "llm_name": "deepseek-chat",  # gpt-4o-mini
+#     "corpus_name": "MIMIC",  # "PubMed", "MOC"
+#     "llm_name": "hunyuan-chat",  # gpt-4o-mini
 #     "epochs": 50,
 #     "patience": 10,
 #     "ehr_dataset_name": "esrd",
@@ -153,8 +153,8 @@ mimic_re_config_v2 = {
 
 # esrd_config_v2 = {
 #     "retriever_name": "MedCPT",
-#     "corpus_name": "MSD",  # "PubMed", "MOC"
-#     "llm_name": "deepseek-chat",  # gpt-4o-mini
+#     "corpus_name": "MIMIC",  # "PubMed", "MOC"
+#     "llm_name": "hunyuan-chat",  # gpt-4o-mini
 #     "epochs": 50,
 #     "patience": 10,
 #     "ehr_dataset_name": "esrd",

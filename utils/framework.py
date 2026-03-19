@@ -18,28 +18,19 @@ from tenacity import (
 from utils.framework import *
 from utils.retrieve_utils import RetrievalSystem
 from utils.healthcare_context_utils import ContextBuilder
-from utils.config import deepseek_config, v1_config, v2_config, default_config
+from utils.config import self_config
 from utils.prompt_template.template import *
-
+import os
 
 class Agent:
     def __init__(
         self,
         role: Literal["doctor", "leader"],
-        llm_name: str = "deepseek-chat"
+        llm_name: str = "hunyuan-chat"
     ) -> None:
         self.role = role
         self.llm_name = llm_name
-
-        # Set the llm_config according to your api_key and your need.
-        if llm_name == "deepseek-chat":
-            self.llm_config = deepseek_config
-        elif "gpt" in llm_name.lower():
-            self.llm_config = v1_config
-        elif "qwen" in llm_name.lower() or "doubao" in llm_name.lower() or "claude" in llm_name.lower():
-            self.llm_config = v2_config
-        elif "llama" in llm_name.lower():
-            self.llm_config = default_config
+        self.llm_config = self_config
 
         self.client = OpenAI(
             api_key=self.llm_config["api_key"], base_url=self.llm_config["api_base"])
@@ -132,7 +123,7 @@ class LeaderAgent(Agent):
     def __init__(
         self,
         role: str = "leader",
-        llm_name: str = "deepseek-chat",
+        llm_name: str = "hunyuan-chat",
     ) -> None:
         super().__init__(role, llm_name)
         self.action_system_prompt = action_system

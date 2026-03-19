@@ -8,6 +8,8 @@ from sklearn.model_selection import train_test_split
 
 from ehr_datasets.utils.tools import forward_fill_pipeline, normalize_dataframe, export_missing_mask, export_record_time, export_note
 
+from feature_config import ALL_LAB_FEATURES
+
 processed_data_dir = os.path.join("./ehr_datasets/mimic-iv", 'processed')
 os.makedirs(processed_data_dir, exist_ok=True)
 SEED = 42
@@ -26,7 +28,8 @@ all_columns = [
 
 # Record feature names
 basic_records = ['RecordID', 'PatientID', 'RecordTime']
-target_features = ['Outcome', 'LOS', 'Readmission']
+target_features = ['Outcome', 'LOS', 'Readmission', 'diagnoses', 'procedures']
+icd_codes = ['diag_icd_code', 'proc_icd_code', 'pres_icd_code']
 demographic_features = ['Sex', 'Age']
 # labtest_features = ['Capillary refill rate', 'Glascow coma scale eye opening', 'Glascow coma scale motor response', 'Glascow coma scale total', 'Glascow coma scale verbal response', 'Diastolic blood pressure', 'Fraction inspired oxygen', 'Glucose', 'Heart Rate', 'Height', 'Mean blood pressure', 'Oxygen saturation', 'Respiratory rate', 'Systolic blood pressure', 'Temperature', 'Weight', 'pH']
 # categorical_labtest_features = ['Capillary refill rate', 'Glascow coma scale eye opening', 'Glascow coma scale motor response', 'Glascow coma scale total', 'Glascow coma scale verbal response']
@@ -51,13 +54,24 @@ print("=== begin to read data from .parquet ===")
 df = pd.read_parquet(os.path.join(processed_data_dir, 'mimic4_formatted_ehr.parquet'))
 print("=== successfully read data ===")
 
+# for col in all_columns:
+#     print(f"{col} contains: {df[col].iloc[0]}")
+
+# ============ process some basic items =========== #
+# ============ in case too many dimension 'str' ==== #
+# print("============ processing some basic items ===========")
+# df['gender'] = df['gender'].map({'M': 0, 'F': 1}).fillna(-1).astype(int)
+
+# print("============ processed some basic items ===========")
+# ============ process some basic items =========== #
+
 # 映射字段
 df['PatientID'] = df['subject_id']
 df['AdmissionID'] = df['hadm_id']
 df['RecordTime'] = df['intime']                # 使用 ICU 入科时间作为记录时间
 df['Sex'] = df['gender']                       # 性别
 df['Age'] = df['anchor_age']                   # 基线年龄
-df['Outcome'] = df['diagnoses']     
+df['Outcome'] = df['hospital_expire_flag']     
 df['LOS'] = df['los']                          # ICU 住院时长
 df['Glucose'] = df['Glucose_value']            # 血糖
 df['pH'] = df['pH_value']
@@ -84,13 +98,17 @@ df = df.merge(df_sort_admi[['hadm_id', 'Readmission']], on='hadm_id', how='left'
 print("successfully generate Readmission")
 
 # 仅保留所需列（基本记录、目标、人口统计学、实验室特征）
-keep_cols = basic_records + target_features + demographic_features + labtest_features
+keep_cols = basic_records + target_features + demographic_features + labtest_features + ALL_LAB_FEATURES
 df = df[keep_cols]
 print("successfully keep columns")
 
 # 确保数据按 RecordID 和 RecordTime 排序（若为静态数据，则每个 RecordID 仅一行）
 df = df.sort_values(by=['RecordID', 'RecordTime']).reset_index(drop=True)
 print("sorted by RecordID and RecordTime")
+
+
+df.to_csv("mimic-iv.csv", index=False, encoding='utf-8-sig')
+print("successfully store .csv")
 # ==================== 数据集划分 ====================
 # Group the dataframe by `RecordID`
 grouped = df.groupby('RecordID')
@@ -99,10 +117,10 @@ grouped = df.groupby('RecordID')
 patients = np.array(list(grouped.groups.keys()))
 patients_outcome = np.array([grouped.get_group(patient_id)['Outcome'].iloc[0] for patient_id in patients])
 
-unique, counts = np.unique(patients_outcome, return_counts=True)
-with open("uc_pairs.txt", "w") as f:
-    f.write(str(dict(zip(unique, counts))))
-print("pairs save to txt")
+# unique, counts = np.unique(patients_outcome, return_counts=True)
+# with open("uc_pairs.txt", "w") as f:
+#     f.write(str(dict(zip(unique, counts))))
+# print("pairs save to txt")
 
 # Get the train_val/test patient IDs
 train_val_patients, test_patients = train_test_split(patients, test_size=1/100, random_state=SEED, stratify=patients_outcome)
@@ -114,14 +132,17 @@ test_df = df[df['RecordID'].isin(test_patients)]
 print("successfully group by RecordID")
 
 # ==================== LLM 设置：导出缺失掩码、记录时间、原始数据 ====================
+print("start to export missing mask")
 train_missing_mask = export_missing_mask(df, demographic_features, labtest_features, id_column='RecordID')
 val_missing_mask = export_missing_mask(df, demographic_features, labtest_features, id_column='RecordID')
 test_missing_mask = export_missing_mask(test_df, demographic_features, labtest_features, id_column='RecordID')
 
+print("start to export record time")
 train_record_time = export_record_time(df, id_column='RecordID')
 val_record_time = export_record_time(df, id_column='RecordID')
 test_record_time = export_record_time(test_df, id_column='RecordID')
 
+print("start to forward fill")
 _, train_raw_x, _, _ = forward_fill_pipeline(df, None, demographic_features, labtest_features, target_features, [], id_column='RecordID')
 _, val_raw_x, _, _ = forward_fill_pipeline(df, None, demographic_features, labtest_features, target_features, [], id_column='RecordID')
 _, test_raw_x, _, _ = forward_fill_pipeline(test_df, None, demographic_features, labtest_features, target_features, [], id_column='RecordID')
