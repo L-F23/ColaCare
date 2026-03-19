@@ -96,8 +96,8 @@ python train_fusion.py
 ColaCare has been evaluated on the following datasets:
 
 - MIMIC-IV
-- CDSL (COVID-19 Data Saving Lives)
-- ESRD (End-Stage Renal Disease)
+<!-- - CDSL (COVID-19 Data Saving Lives)
+- ESRD (End-Stage Renal Disease) -->
 
 ### Tasks
 

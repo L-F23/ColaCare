@@ -1,3 +1,7 @@
+# ============================================== #
+# ====== Definition of Different Agents ======== #
+# ============================================== #
+
 from typing import Literal, List, Dict
 import re
 import json
@@ -363,3 +367,9 @@ def extract_and_parse_json(text: str):
             raise ValueError("Invalid JSON content found in match 3.")
 
     raise ValueError("No valid JSON content found.")
+
+# ================== InquryAgent ===================== #
+# ================== InquryAgent ===================== #
+
+# ================== PatientAgent ===================== #
+# ================== PatientAgent ===================== #

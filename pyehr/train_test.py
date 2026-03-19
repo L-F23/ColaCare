@@ -22,44 +22,44 @@ def get_checkpoint_filename(ckpt_dir: str):
         filename = list(sorted(filenames, key=lambda x: int(x.split('-')[-1].split('.')[0][1:])))[-1]
     return f"{ckpt_dir}/{filename}"
 
+# =================== discard ========================= #
+# def run_dl_experiment(config):
+    # # data
+    # dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
+    # # logger
+    # checkpoint_filename = f'{config["model"]}-fold{config["fold"]}-seed{config["seed"]}'
+    # if "time_aware" in config and config["time_aware"] == True:
+    #     checkpoint_filename+="-ta" # time-aware loss applied
+    # logger = CSVLogger(save_dir="logs", name=f'train/{config["dataset"]}/{config["task"]}', version=checkpoint_filename)
 
-def run_dl_experiment(config):
-    # data
-    dm = EhrDataModule(f'../ehr_datasets/{config["dataset"]}/processed/fold_{config["fold"]}', batch_size=config["batch_size"])
-    # logger
-    checkpoint_filename = f'{config["model"]}-fold{config["fold"]}-seed{config["seed"]}'
-    if "time_aware" in config and config["time_aware"] == True:
-        checkpoint_filename+="-ta" # time-aware loss applied
-    logger = CSVLogger(save_dir="logs", name=f'train/{config["dataset"]}/{config["task"]}', version=checkpoint_filename)
+    # # EarlyStop and checkpoint callback
+    # if config["task"] in ["outcome", "readmission", "multitask"]:
+    #     # early_stopping_callback = EarlyStopping(monitor="auprc", patience=config["patience"], mode="max",)
+    #     # checkpoint_callback = ModelCheckpoint(filename="best", monitor="auprc", mode="max")
+    #     checkpoint_callback = ModelCheckpoint(every_n_epochs=50, filename="best")
+    # elif config["task"] == "los":
+    #     early_stopping_callback = EarlyStopping(monitor="mae", patience=config["patience"], mode="min",)
+    #     checkpoint_callback = ModelCheckpoint(filename="best", monitor="mae", mode="min")
 
-    # EarlyStop and checkpoint callback
-    if config["task"] in ["outcome", "readmission", "multitask"]:
-        # early_stopping_callback = EarlyStopping(monitor="auprc", patience=config["patience"], mode="max",)
-        # checkpoint_callback = ModelCheckpoint(filename="best", monitor="auprc", mode="max")
-        checkpoint_callback = ModelCheckpoint(every_n_epochs=50, filename="best")
-    elif config["task"] == "los":
-        early_stopping_callback = EarlyStopping(monitor="mae", patience=config["patience"], mode="min",)
-        checkpoint_callback = ModelCheckpoint(filename="best", monitor="mae", mode="min")
+    # L.seed_everything(config["seed"]) # seed for reproducibility
 
-    L.seed_everything(config["seed"]) # seed for reproducibility
-
-    # train/val/test
-    trainer = L.Trainer(accelerator="gpu", devices=[1], max_epochs=config["epochs"], logger=logger, num_sanity_val_steps=0, callbacks=[checkpoint_callback])
-    # trainer = L.Trainer(accelerator="gpu", devices=[1], max_epochs=1, logger=logger, num_sanity_val_steps=0, limit_train_batches=1, limit_val_batches=1, limit_test_batches=1)
+    # # train/val/test
+    # trainer = L.Trainer(accelerator="gpu", devices=[1], max_epochs=config["epochs"], logger=logger, num_sanity_val_steps=0, callbacks=[checkpoint_callback])
+    # # trainer = L.Trainer(accelerator="gpu", devices=[1], max_epochs=1, logger=logger, num_sanity_val_steps=0, limit_train_batches=1, limit_val_batches=1, limit_test_batches=1)
     
-    pipeline = DlPipeline(config)
-    trainer.fit(pipeline, dm)
-    # best_model_path = checkpoint_callback.best_model_path
+    # pipeline = DlPipeline(config)
+    # trainer.fit(pipeline, dm)
+    # # best_model_path = checkpoint_callback.best_model_path
 
-    # best_model_path = get_checkpoint_filename(f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}/checkpoints')
-    # pipeline = DlPipeline.load_from_checkpoint(best_model_path, config=config)
-    # trainer.test(pipeline, dm)
+    # # best_model_path = get_checkpoint_filename(f'logs/train/{config["dataset"]}/{config["task"]}/{config["model"]}-fold{config["fold"]}-seed{config["seed"]}/checkpoints')
+    # # pipeline = DlPipeline.load_from_checkpoint(best_model_path, config=config)
+    # # trainer.test(pipeline, dm)
 
-    # perf = pipeline.test_performance
-    # outs = pipeline.test_outputs
-    # return perf, outs
-    return None, None
-
+    # # perf = pipeline.test_performance
+    # # outs = pipeline.test_outputs
+    # # return perf, outs
+    # return None, None
+# =================== discard ========================= #
 
 def train_dl(config):
     # data
